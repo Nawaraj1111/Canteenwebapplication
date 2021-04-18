@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block title %}Search {% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h3>Search Results for <span class="text-info">"{{request.GET.keyword}}"</span></h3>
+            <hr>
+            {% if results < 1 %}
+                    <h1>No Result is found</h1>
+            {% else %}
+                {% for result in results %}
+                <div class="row">
+                    <div class="col-md-3">
+                        <img src="{{result.image.url}}" class="img-fluid" alt="">
+                    </div>
+                    <div class="col-md-9">
+                        <h4><a href="{% url 'collegekhajaghar:productdetail' result.slug %}">{{result.title}}</a></h4>
+                        <p>{{result.description|truncatewords:10}}</p>
+                        <a href="{% url 'collegekhajaghar:addtocart' result.id %}" class="btn btn-primary">Add To Cart</a>
+                    </div>
+                </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}
