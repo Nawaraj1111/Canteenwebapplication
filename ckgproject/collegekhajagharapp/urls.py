@@ -1,6 +1,6 @@
-from django.urls import path
+from django.urls import path, re_path
 from .views import *
-
+from . import views
 app_name = "collegekhajaghar"
 urlpatterns = [
     # Client side pages
@@ -11,6 +11,7 @@ urlpatterns = [
     path("all-products/", AllProductsView.as_view(), name="allproducts"),
     path("order/", CustomerOrderView.as_view(), name="csorder"),
     path("product/<slug:slug>/", ProductDetailView.as_view(), name="productdetail"),
+    # path("products/<slug:slug>/", views.add_review, name="addreview"),
 
     path("add-to-cart-<int:pro_id>/", AddToCartView.as_view(), name="addtocart"),
     path("my-cart/", MyCartView.as_view(), name="mycart"),

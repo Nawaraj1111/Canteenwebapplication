@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %}All reviews{% endblock %}
+
+{% block content %}
+    <p class="container">
+        <p class="row">
+            <p class="col-md-2">
+                {% for i in allreviews %}
+                    <p><b>Review of product: {{i.product}}</b></p>
+                    <p><b>Reviewed by: {{i.user.username}}</b></p>
+                    <p>{{i.rating}}</p>
+                    <p>{{i.comment}}</p>
+                {% endfor %}
+
+            </p>
+
+        </p>
+    </p>
+
+{% endblock %}

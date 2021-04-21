@@ -11,6 +11,7 @@ from django.db.models import Q
 from .models import *
 from .forms import *
 import requests
+from django.views.decorators.csrf import ensure_csrf_cookie
 
 
 class EcomMixin(object):
@@ -23,17 +24,14 @@ class EcomMixin(object):
                 cart_obj.save()
         return super().dispatch(request, *args, **kwargs)
 
-
 class HomeView(EcomMixin, TemplateView):
     template_name = "home.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['myname'] = "Nawaraj Luitel"
         all_products = Product.objects.all().order_by("-id")
         paginator = Paginator(all_products, 8)
         page_number = self.request.GET.get('page')
-        print(page_number)
         product_list = paginator.get_page(page_number)
         context['product_list'] = product_list
         return context
@@ -47,18 +45,52 @@ class AllProductsView(EcomMixin, TemplateView):
         context['allcategories'] = Category.objects.all()
         return context
 
+class AllReview(TemplateView):
+    template_name = "testing.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['allreviews'] = Review.objects.all()
+        for i in allreviews:
+            print(i)
+        return context
 
 class ProductDetailView(EcomMixin, TemplateView):
     template_name = "productdetail.html"
+    form = ReviewForm
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         url_slug = self.kwargs['slug']
+        print(url_slug)
         product = Product.objects.get(slug=url_slug)
+        reviews = Review.objects.all()
+        reviews_count = Review.objects.all().count()
         product.view_count += 1
         product.save()
-        context['product'] = product
+        context.update(
+            {
+                'product': product,
+                'form': self.form,
+                'reviews': reviews,
+                'reviews_count': reviews_count,
+            }
+        )
+        # context['product'] = product
+        # context['form'] = self.form
         return context
+
+    def post(self, request, *args, **kwargs):
+        form = ReviewForm(request.POST)
+        if form.is_valid():
+            url_slug = self.kwargs['slug']
+            form.instance.product = Product.objects.get(slug=url_slug)
+            form.instance.user = request.user
+            form.save()
+            return redirect("collegekhajaghar:productdetail", slug=url_slug)
+            # return redirect(reverse("collegekhajaghar:productdetail", kwargs={
+            #     product.slug
+            # }))
 
 
 class AddToCartView(EcomMixin, TemplateView):
@@ -504,3 +536,66 @@ class AdminProductCreateView(AdminRequiredMixin, CreateView):
         for i in images:
             ProductImage.objects.create(product=p, image=i)
         return super().form_valid(form)
+
+#
+# def detail(request, id):
+#     product = Product.objects.get(id=id) # select * from Product where id=id
+#     reviews = Review.objects.filter(product=id).order_by("-comment")
+#     average = reviews.aggregate(Avg("rating"))["rating__avg"]
+#     if average == None:
+#         average = 0
+#     average = round(average, 2)
+#     context = {
+#         "Product": product,
+#         "reviews": reviews,
+#         "average": average
+#     }
+#     return render(request, 'productdetail.html', context)
+#
+
+# @ensure_csrf_cookie
+# def add_review(request, id):
+#     if request.user.is_authenticated:
+#         product = Product.objects.get(id=id)
+#         context = {'allreviews': allreviews}
+#         print(context)
+#         if request.method == "POST":
+#             form = ReviewForm(request.POST or None)
+#             if form.is_valid():
+#                 data = form.save(commit=False)
+#                 data.comment = request.POST["comment"]
+#                 data.user = request.user
+#                 data.product = product
+#                 data.save()
+#                 return redirect("collegekhajaghar:customerlogin")
+#         else:
+#             form = ReviewForm()
+#         return render(request, 'reviews.html', slug, context)
+#     else:
+#         return redirect("collegekhajaghar:customerlogin")
+
+# def show_review(request, slug):
+#     if request.method == "GET":
+#         allreviews = Review.objects.all().get(slug=slug).order_by("-id")
+#         context = {'allreviews': allreviews}
+#     return render(request, 'testing.html', context, slug)
+
+
+# # def add_review(request, id):
+# #     if request.user.is_authenticated:
+# #         product = Product.objects.get(id=id)
+# #         if request.method == "POST":
+# #             form = ReviewForm(request.POST or None)
+# #             if form.is_valid():
+# #                 data = form.save(commit=False)
+# #                 data.comment = request.POST["comment"]
+# #                 data.rating = request.POST["rating"]
+# #                 data.user = request.user
+# #                 data.product = product
+# #                 data.save()
+# #                 return redirect("collegekhajaghar:productdetail", id)
+# #         else:
+# #             form = ReviewForm()
+# #         return render(request, 'productdetail.html', {"form": form})
+# #     else:
+# #         return redirect("collegekhajaghar:customerlogin")

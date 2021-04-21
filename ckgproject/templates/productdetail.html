@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}{{product.title}}{% endblock %}
+{% block title %}{{product}}{% endblock %}
 
 {% block content %}
 <div class="container">
@@ -32,6 +32,42 @@
             <p>{{product.description}}</p>
         </div>
     </div>
+    <hr>
+    <div class="section">
+        <div class="container">
+            <h3 class="text-center">Total Reviews: {{ reviews_count }}</h3>
+            <div class="row">
+                <div class="col-lg-8 mx-auto">
+                    <div class="media-list">
+                        <form action="{% url 'collegekhajaghar:productdetail' slug=product.slug %}" method="POST">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <p>{{form.comment}}</p>
+                            </div>
+                            <button class="btn btn-primary btn-block">Add Review</button>
+                        </form>
+                        <br>
+                        <hr>
+                        <h4>Previous Review</h4>
+                        {% for review in reviews%}
+                        <div>
+                            <i class='bx bxs-user nav__icon'></i>
+                            <div class="media-body">
+                                <div class="small">
+                                    <b>{{review.user.username}}</b>
+                                    <time class="ml-4 opacity-70 samm-3">{{review.date_time}}</time>
+                                </div>
+                                <p>{{review.comment}}</p>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="col-lg-8 mx-auto">
 
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}

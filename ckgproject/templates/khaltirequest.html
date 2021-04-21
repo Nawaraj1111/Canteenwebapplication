@@ -12,16 +12,12 @@
     <script>
         var config = {
             // replace the publicKey with yours
-            "publicKey": "test_public_key_dc74e0fd57cb46cd93832aee0a390234",
+            "publicKey": "test_public_key_02e9fa83ed1a4fff8e41c4e2ba65af70",
             "productIdentity": "order_{{order.id}}",
             "productName": "order_{{order.id}}",
             "productUrl": "http://localhost:8000",
             "paymentPreference": [
-                "MOBILE_BANKING",
                 "KHALTI",
-                "EBANKING",
-                "CONNECT_IPS",
-                "SCT",
                 ],
             "eventHandler": {
                 onSuccess (payload) {

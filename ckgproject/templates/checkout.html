@@ -1,11 +1,13 @@
 {% extends 'base.html' %}
-
+{% load static %}
 {% block title %}Checkout {% endblock %}
+{% block extraheading %}
+{% endblock %}
 
 {% block content %}
 <div class="container">
-    <div class="row">
-        <div class="col-md-6">
+    <div class="row  mt-10">
+        <div class="col-md-6  border">
             <h3>Items in the cart</h3>
             <a href="{% url 'collegekhajaghar:mycart' %}">Update Cart</a>
             <table class="table">
@@ -35,12 +37,12 @@
                 </tbody>
             </table>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-6 border rounded ">
             <h3>Checkout Form</h3>
             <form action="" method="POST">
                 {% csrf_token %}
                 {{form.as_p}}
-                <button class="btn btn-info">Place order</button>
+                <button class="btn btn-info ">Place order</button>
             </form>
         </div>
     </div>

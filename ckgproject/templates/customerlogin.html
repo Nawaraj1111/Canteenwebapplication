@@ -22,7 +22,7 @@
                 {% endif %}
             </form>
             <p>Forgot Password?<a href="{% url 'collegekhajaghar:passwordforgot' %}">Reset now.</a></p>
-            <p> or dont have account? <a href="{% url 'collegekhajaghar:customerregistration' %}{% if request.GET.next %}?next={{request.GET.next}}{% endif %}">Register here</a></p>
+            <p>Dont have account? <a href="{% url 'collegekhajaghar:customerregistration' %}{% if request.GET.next %}?next={{request.GET.next}}{% endif %}">Register here</a></p>
         </div>
     </div>
 </div>

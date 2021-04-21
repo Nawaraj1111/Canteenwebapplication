@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block title %}{{Category}}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h3>Product: {{product.title}}</h3><hr>
+    <div class="row">
+        <div class="col-md-4">
+            <img src="{{product.image.url}}" alt="" class="img-fluid">
+            <div class="row">
+                {% for pi in product.productimage_set.all %}
+                <div class="col-md-4 p-3">
+                    <a href="{{pi.image.url}}" target="_blank">
+                        <img src="{{pi.image.url}}" class="img-fluid" style="height: 100px; object-fit: contain;" alt="">
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="col-md-8">
+            <h4>{{product.title}} (Viewed {{product.view_count}} times)</h4>
+            <h5>Category: {{product.category}}</h5>
+            <h5>Price: <strike>Rs. {{product.normal_price}}</strike> Rs. {{product.offer_price}}</h5>
+            <a href="{% url 'collegekhajaghar:addtocart' product.id %}" class="btn btn-info">Add To Cart</a>
+            <hr>
+            <p class="text-info">Carbohydrate Amount: {{product.carbohydrate}} calories</p>
+            <p class="text-info">Protein Amount: {{product.protein}} calories</p>
+            <p class="text-info">Fat Amount: {{product.fats}} calories</p>
+            <p class="text-info">Other energy: {{product.other_energy}} calories</p>
+            <hr>
+            <p>{{product.description}}</p>
+        </div>
+    </div>
+    {% if request.user.customer %}
+    <div class="card">
+        <div class="card-body">
+            <h3 class="text-center">Add Review</h3>
+            <form action="{% url 'collegekhajaghar:productdetail' product.slug %}" method="POST">
+                {% csrf_token %}
+                <label for="comment">Review</label>
+                <textarea name="comment" id="comment" cols="30" rows="5" class="form-control"></textarea>
+
+                <label for="ratings">Rating</label>
+                <input type="range" id="rangeInput"
+                    name="rating" min="0" max="10" value="0" step="0.5"
+                    oninput="amount.value=rangeInput.value">
+
+                <output name="amount" id="amount" for="rangeInput">0</output>
+                <br>
+                <input type="submit" class="btn btn-success" value="Add Review">
+            </form>
+        </div>
+    </div>
+    {% endif %}
+
+
+</div>
+{% endblock %}

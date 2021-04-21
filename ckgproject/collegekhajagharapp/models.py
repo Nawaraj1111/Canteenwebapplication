@@ -97,7 +97,8 @@ METHOD = (
 class Order(models.Model):
     cart = models.OneToOneField(Cart, on_delete=models.CASCADE)
     ordered_by = models.CharField(max_length=30)
-    order_prefered_date = models.DateTimeField(auto_now_add=False, auto_now=False, blank=True)
+    # order_date = models.DateField(auto_now_add=False, auto_now=False)
+    # order_time = models.TimeField(auto_now_add=False, auto_now=False, blank=True)
     mobile = models.CharField(max_length=10)
     email = models.EmailField(null=True, blank=True)
     subtotal = models.PositiveIntegerField()
@@ -112,3 +113,11 @@ class Order(models.Model):
 
     def __str__(self):
         return "Order: " + str(self.id)
+
+class Review(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    date_time = models.DateTimeField(auto_now_add=True)
+    comment = models.TextField(max_length=100)
+    def __str__(self):
+        return self.user.username

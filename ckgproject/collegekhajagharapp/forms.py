@@ -1,13 +1,37 @@
 from django import forms
-from .models import Order, Customer, Product
+from .models import Order, Customer, Product, Review
 from django.contrib.auth.models import User
+from django.contrib.admin.widgets import AdminDateWidget, AdminSplitDateTime, AdminTimeWidget
+
+payment_method = [
+    ('Khalti', 'Khalti'),
+    ('Pay with Cash', 'pay with Cash'),
+]
 
 
 class CheckoutForm(forms.ModelForm):
     class Meta:
         model = Order
         fields = ["ordered_by",
-                  "mobile", "email", "order_prefered_date", "payment_method"]
+                  "mobile", "email", "payment_method"]
+
+        widgets = {
+            "ordered_by": forms.TextInput(attrs={
+                "class": "form-control",
+                "placeholder": "Dish orderer name "
+            }),
+            "mobile": forms.TextInput(attrs={
+                "class": "form-control",
+                "placeholder": "Enter your phone number ",
+            }),
+            "email": forms.EmailInput(attrs={
+                "class": "form-control",
+                "placeholder": "Enter your email address "
+            }),
+
+
+
+        }
 
 class CustomerRegistrationForm(forms.ModelForm):
     username = forms.CharField(widget=forms.TextInput())
@@ -131,3 +155,15 @@ class PasswordResetForm(forms.Form):
             raise forms.ValidationError(
                 "New Passwords did not match!")
         return confirm_new_password
+
+class ReviewForm(forms.ModelForm):
+    comment = forms.CharField(widget=forms.Textarea(attrs={
+        'placeholder':  "Dish review here....",
+        'class': 'md-textarea form-control',
+        'row': '4',
+        'height': "h-25"
+    }))
+
+    class Meta:
+        model = Review
+        fields = ("comment",)
