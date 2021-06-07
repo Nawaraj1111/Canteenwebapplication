@@ -1,22 +1,26 @@
 {% extends 'base.html' %}
 
-{% block title %}Admin Login{% endblock %}
+{% block title %}Staff Login{% endblock %}
 
-{% block content1 %}
+{% block content %}
 <style>
     .errorlist {
         color: red;
     }
+    .btnclr{
+        color: white;
+        background: #232923;
+    }
 </style>
 <div class="container">
-    <div class="row">
+    <div class="row mt-3">
         <div class="col-md-6 mx-auto">
-            <h3>Admin Login Form</h3>
+            <h3 class="text-center mt-3">Staff Login Form</h3>
             <hr>
             <form action="" method="POST">
                 {% csrf_token %}
                 {{form.as_p}}
-                <button class="btn btn-primary">Login as a Admin</button>
+                <button class="btn btnclr btn-lg btn-block">Login as Staff</button>
                 {% if error %}
                 <li style="color: red;">{{error}}</li>
                 {% endif %}

@@ -1,7 +1,7 @@
 from django import forms
-from .models import Order, Customer, Product, Review
 from django.contrib.auth.models import User
-from django.contrib.admin.widgets import AdminDateWidget, AdminSplitDateTime, AdminTimeWidget
+
+from .models import Order, Customer, Product, Review
 
 payment_method = [
     ('Khalti', 'Khalti'),
@@ -13,7 +13,7 @@ class CheckoutForm(forms.ModelForm):
     class Meta:
         model = Order
         fields = ["ordered_by",
-                  "mobile", "email", "payment_method"]
+                  "mobile", "email", "preffered_date_time", "payment_method"]
 
         widgets = {
             "ordered_by": forms.TextInput(attrs={
@@ -28,19 +28,38 @@ class CheckoutForm(forms.ModelForm):
                 "class": "form-control",
                 "placeholder": "Enter your email address "
             }),
-
-
-
+            "preffered_date_time": forms.DateTimeInput(attrs={'type': 'datetime-local', "class": "form-control",}),
         }
 
 class CustomerRegistrationForm(forms.ModelForm):
-    username = forms.CharField(widget=forms.TextInput())
-    password = forms.CharField(widget=forms.PasswordInput())
-    email = forms.CharField(widget=forms.EmailInput())
+    username = forms.CharField(widget=forms.TextInput(attrs={
+                "class": "form-control",
+                "placeholder": "Enter your preferred username"
+            }))
+    password = forms.CharField(widget=forms.PasswordInput(attrs={
+                "class": "form-control",
+                "placeholder": "Enter your secured password"
+            }))
+    email = forms.CharField(widget=forms.EmailInput(
+        attrs={
+            "class": "form-control",
+            "placeholder": "Enter your email address"
+        }
+    ))
 
     class Meta:
         model = Customer
         fields = ["username", "password", "email", "full_name", "address"]
+        widgets = {
+            "full_name": forms.TextInput(attrs={
+                "class": "form-control",
+                "placeholder": "Enter your full name"
+            }),
+            "address": forms.TextInput(attrs={
+                "class": "form-control",
+                "placeholder": "Enter your home address"
+            }),
+        }
 
     def clean_username(self):
         uname = self.cleaned_data.get("username")
@@ -59,19 +78,46 @@ class CustomerRegistrationForm(forms.ModelForm):
 
 
 class CustomerLoginForm(forms.Form):
-    username = forms.CharField(widget=forms.TextInput())
-    password = forms.CharField(widget=forms.PasswordInput())
+    username = forms.CharField(widget=forms.TextInput(
+        attrs={
+            "class": "form-control",
+            "placeholder": "Enter your username..."
+        }
+    ))
+    password = forms.CharField(widget=forms.PasswordInput(
+        attrs={
+            "class": "form-control",
+            "placeholder": "Enter your password..."
+        }
+    ))
 
+class CkgStaffLoginForm(forms.Form):
+    username = forms.CharField(widget=forms.TextInput(
+        attrs={
+            "class": "form-control",
+            "placeholder": "Enter your username..."
+        }
+    ))
+    password = forms.CharField(widget=forms.PasswordInput(
+        attrs={
+            "class": "form-control",
+            "placeholder": "Enter your password..."
+        }
+    ))
 
 class ProductForm(forms.ModelForm):
     more_images = forms.FileField(required=False, widget=forms.FileInput(attrs={
         "class": "form-control",
         "multiple": True
     }))
+    image = forms.FileField(required=False, widget=forms.FileInput(attrs={
+        "class": "form-control",
+        "multiple": True
+    }))
 
     class Meta:
         model = Product
-        fields = ["title", "slug", "category", "image", "normal_price",
+        fields = ["title", "slug", "category","normal_price",
                   "offer_price", "description", "carbohydrate", "protein", "fats", "other_energy"]
         widgets = {
             "title": forms.TextInput(attrs={
@@ -85,9 +131,6 @@ class ProductForm(forms.ModelForm):
             "category": forms.Select(attrs={
                 "class": "form-control"
             }),
-            "image": forms.ClearableFileInput(attrs={
-                "class": "form-control"
-            }),
             "normal_price": forms.NumberInput(attrs={
                 "class": "form-control",
                 "placeholder": "Marked price of the product..."
@@ -99,13 +142,13 @@ class ProductForm(forms.ModelForm):
             "description": forms.Textarea(attrs={
                 "class": "form-control",
                 "placeholder": "Description of the product...",
-                "rows": 5
+                "rows": "2"
             }),
             "carbohydrate": forms.TextInput(attrs={
                 "class": "form-control",
                 "placeholder": "Enter carbohydate calories"
             }),
-            "Protein": forms.TextInput(attrs={
+            "protein": forms.TextInput(attrs={
                 "class": "form-control",
                 "placeholder": "Enter Protein calories"
             }),
@@ -160,8 +203,7 @@ class ReviewForm(forms.ModelForm):
     comment = forms.CharField(widget=forms.Textarea(attrs={
         'placeholder':  "Dish review here....",
         'class': 'md-textarea form-control',
-        'row': '4',
-        'height': "h-25"
+        'rows': "4"
     }))
 
     class Meta:

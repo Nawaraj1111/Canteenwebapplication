@@ -11,10 +11,11 @@ from django.db.models import Q
 from .models import *
 from .forms import *
 import requests
+from django.db import connection
 from django.views.decorators.csrf import ensure_csrf_cookie
 
 
-class EcomMixin(object):
+class CollegekhajagharsMixin(object):
     def dispatch(self, request, *args, **kwargs):
         cart_id = request.session.get("cart_id")
         if cart_id:
@@ -24,7 +25,8 @@ class EcomMixin(object):
                 cart_obj.save()
         return super().dispatch(request, *args, **kwargs)
 
-class HomeView(EcomMixin, TemplateView):
+
+class HomeView(CollegekhajagharsMixin, TemplateView):
     template_name = "home.html"
 
     def get_context_data(self, **kwargs):
@@ -37,7 +39,7 @@ class HomeView(EcomMixin, TemplateView):
         return context
 
 
-class AllProductsView(EcomMixin, TemplateView):
+class AllProductsView(CollegekhajagharsMixin, TemplateView):
     template_name = "allproducts.html"
 
     def get_context_data(self, **kwargs):
@@ -45,17 +47,19 @@ class AllProductsView(EcomMixin, TemplateView):
         context['allcategories'] = Category.objects.all()
         return context
 
+
 class AllReview(TemplateView):
     template_name = "testing.html"
 
-    def get_context_data(self, **kwargs):
+    def get_context_data(self, allreviews=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['allreviews'] = Review.objects.all()
+        context['allreviews'] = Review.objects.get(slug=id)
         for i in allreviews:
             print(i)
         return context
 
-class ProductDetailView(EcomMixin, TemplateView):
+
+class ProductDetailView(CollegekhajagharsMixin, TemplateView):
     template_name = "productdetail.html"
     form = ReviewForm
 
@@ -64,6 +68,8 @@ class ProductDetailView(EcomMixin, TemplateView):
         url_slug = self.kwargs['slug']
         print(url_slug)
         product = Product.objects.get(slug=url_slug)
+        print(product)
+        reviews=Review.objects.prefetch_related('product_set').get
         reviews = Review.objects.all()
         reviews_count = Review.objects.all().count()
         product.view_count += 1
@@ -93,13 +99,13 @@ class ProductDetailView(EcomMixin, TemplateView):
             # }))
 
 
-class AddToCartView(EcomMixin, TemplateView):
+class AddToCartView(CollegekhajagharsMixin, TemplateView):
     template_name = "addtocart.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         # get product id from requested url
-        product_id = self.kwargs['pro_id']
+        product_id = self.kwargs['dish_id']
         # get product
         product_obj = Product.objects.get(id=product_id)
 
@@ -121,7 +127,8 @@ class AddToCartView(EcomMixin, TemplateView):
             # new item is added in cart
             else:
                 cartproduct = CartProduct.objects.create(
-                    cart=cart_obj, product=product_obj, rate=product_obj.offer_price, quantity=1, subtotal=product_obj.offer_price)
+                    cart=cart_obj, product=product_obj, rate=product_obj.offer_price, quantity=1,
+                    subtotal=product_obj.offer_price)
                 cart_obj.total += product_obj.offer_price
                 cart_obj.save()
 
@@ -129,12 +136,14 @@ class AddToCartView(EcomMixin, TemplateView):
             cart_obj = Cart.objects.create(total=0)
             self.request.session['cart_id'] = cart_obj.id
             cartproduct = CartProduct.objects.create(
-                cart=cart_obj, product=product_obj, rate=product_obj.offer_price, quantity=1, subtotal=product_obj.offer_price)
+                cart=cart_obj, product=product_obj, rate=product_obj.offer_price, quantity=1,
+                subtotal=product_obj.offer_price)
             cart_obj.total += product_obj.offer_price
             cart_obj.save()
         return context
 
-class ManageCartView(EcomMixin, View):
+
+class ManageCartView(CollegekhajagharsMixin, View):
     def get(self, request, *args, **kwargs):
         cp_id = self.kwargs["cp_id"]
         action = request.GET.get("action")
@@ -165,7 +174,7 @@ class ManageCartView(EcomMixin, View):
         return redirect("collegekhajaghar:mycart")
 
 
-class EmptyCartView(EcomMixin, View):
+class EmptyCartView(CollegekhajagharsMixin, View):
     def get(self, request, *args, **kwargs):
         cart_id = request.session.get("cart_id", None)
         if cart_id:
@@ -176,7 +185,7 @@ class EmptyCartView(EcomMixin, View):
         return redirect("collegekhajaghar:mycart")
 
 
-class MyCartView(EcomMixin, TemplateView):
+class MyCartView(CollegekhajagharsMixin, TemplateView):
     template_name = "mycart.html"
 
     def get_context_data(self, **kwargs):
@@ -190,7 +199,7 @@ class MyCartView(EcomMixin, TemplateView):
         return context
 
 
-class CheckoutView(EcomMixin, CreateView):
+class CheckoutView(CollegekhajagharsMixin, CreateView):
     template_name = "checkout.html"
     form_class = CheckoutForm
     success_url = reverse_lazy("collegekhajaghar:home")
@@ -220,7 +229,7 @@ class CheckoutView(EcomMixin, CreateView):
             form.instance.subtotal = cart_obj.total
             form.instance.discount = 0
             form.instance.total = cart_obj.total
-            form.instance.order_status = "Order Received"
+            form.instance.order_status = "Order Pending"
             del self.request.session['cart_id']
             pm = form.cleaned_data.get("payment_method")
             order = form.save()
@@ -272,6 +281,7 @@ class KhaltiVerifyView(View):
         }
         return JsonResponse(data)
 
+# Customer Registration page
 class CustomerRegistrationView(CreateView):
     template_name = "customerregistration.html"
     form_class = CustomerRegistrationForm
@@ -300,6 +310,7 @@ class CustomerLogoutView(View):
         return redirect("collegekhajaghar:home")
 
 
+# login view of customer page
 class CustomerLoginView(FormView):
     template_name = "customerlogin.html"
     form_class = CustomerLoginForm
@@ -325,21 +336,33 @@ class CustomerLoginView(FormView):
             return self.success_url
 
 
-class AboutView(EcomMixin, TemplateView):
+class AboutView(CollegekhajagharsMixin, TemplateView):
     template_name = "about.html"
 
 
-class ContactView(EcomMixin, TemplateView):
+class ContactView(CollegekhajagharsMixin, TemplateView):
     template_name = "contactus.html"
 
-class DashboardView(TemplateView):
-    template_name = "customerdashboard.html"
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["data"] = "Hello I am templates"
-        return context
+# class DashboardView(TemplateView):
+#     template_name = "customerdashboard.html"
+#
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         # context["data"] = "Hello I am templates"
+#         cursor = connection.cursor()
+#         cursor.execute("select * from collegekhajagharapp_customer ")
+#         r = cursor.fetchall()
+#         context["list"] = r
+#         print(context)
+#         return context
 
+def DashboardView(request):
+    cursor = connection.cursor()
+    cursor.execute("select count(username) from auth_user ")
+    r = cursor.fetchone()
+    print(r)
+    return render(request, 'adminpages/admindashboard.html')
 
 
 class CustomerProfileView(TemplateView):
@@ -359,6 +382,7 @@ class CustomerProfileView(TemplateView):
         orders = Order.objects.filter(cart__customer=customer).order_by("-id")
         context["orders"] = orders
         return context
+
 
 class CustomerOrderView(TemplateView):
     template_name = "customerorder.html"
@@ -421,7 +445,7 @@ class PasswordForgotView(FormView):
         # send mail to the user with email
         text_content = 'Reset your password following this link: '
         html_content = url + "/password-reset/" + email + \
-            "/" + password_reset_token.make_token(user) + "/"
+                       "/" + password_reset_token.make_token(user) + "/"
         send_mail(
             'CollegeKhajaghar Password Reset',
             text_content + html_content,
@@ -444,7 +468,7 @@ class PasswordResetView(FormView):
         if user is not None and password_reset_token.check_token(user, token):
             pass
         else:
-            return redirect(reverse("collegekhajaghar:passwordforgot")+"?m=e")
+            return redirect(reverse("collegekhajaghar:passwordforgot") + "?m=e")
 
         return super().dispatch(request, *args, **kwargs)
 
@@ -456,10 +480,11 @@ class PasswordResetView(FormView):
         user.save()
         return super().form_valid(form)
 
+
 # admin pages
 class AdminLoginView(FormView):
     template_name = "adminpages/adminlogin.html"
-    form_class = CustomerLoginForm
+    form_class = CkgStaffLoginForm
     success_url = reverse_lazy("collegekhajaghar:adminhome")
 
     def form_valid(self, form):
@@ -507,6 +532,11 @@ class AdminOrderListView(AdminRequiredMixin, ListView):
     template_name = "adminpages/adminorderlist.html"
     queryset = Order.objects.all().order_by("-id")
     context_object_name = "allorders"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["pendingorders"] = Order.objects.all().order_by("-id")
+        return context
 
 
 class AdminOrderStatuChangeView(AdminRequiredMixin, View):

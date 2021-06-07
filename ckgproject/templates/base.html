@@ -3,15 +3,20 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="College khajagharGhar at Itahari International College, IT College of Nepal, First college to implement timebased khajaghar +977 9815369883, khajgharghar@gmail.com" />
+        <meta name="keywords" content="Nawaraj Luitel,student at Itahari International College|IIC|iic,khajgharghar,canteen in nepal, student order, canteen order, online canteen, khaja, momo, chaumin " />
+        <meta property="og:title" content="Collegekhajghar:IIC Nepal|first online cateen, food order"/>
         <title>{% block title %}{% endblock %}</title>
+        <link rel="shortcut icon" type="image/png" href="media/products/foodIcon.png">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <!-- Boostrap -->
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-                <!-- ===== BOX ICONS ===== -->
+        <!-- ===== BOX ICONS ===== -->
         <link href='https://cdn.jsdelivr.net/npm/boxicons@2.0.5/css/boxicons.min.css' rel='stylesheet'>
-        {% load static %}
+       {% load static %}
         <link rel="stylesheet" href="{% static 'css/navigation.css'%}">
-         {% block extraheading %}
+        {% block extraheading %}
         {% endblock %}
     </head>
     <body id="body-pd">
@@ -19,34 +24,30 @@
             <div class="header__toggle">
                 <i class='bx bx-menu' id="header-toggle"></i>
             </div>
-            <form class="form-inline my-2 my-lg-0" action="{% url 'collegekhajaghar:search' %}" method="GET">
+            <form class="form-inline my-2 my-lg-0 outafter" action="{% url 'collegekhajaghar:search' %}" method="GET">
             <input name="keyword" class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" required>
             <button class="btn btn-danger my-2 my-sm-0" type="submit">Search</button>
             </form>
             {% if request.user.customer %}
             <div class="header__img">
-                <img src="{% static 'displayPicture/profile.jpg '%}" alt="picture">
+                <a href="{% url 'collegekhajaghar:customerprofile' %}">
+                    <img src="{% static 'displayPicture/profile.jpg '%}" alt="picture">
+                </a>
             </div>
             {% endif %}
         </header>
-        <div class="l-navbar" id="nav-bar">
+            <div class="l-navbar" id="nav-bar">
             <nav class="nav">
                 <div>
                     <a href="{% url 'collegekhajaghar:home' %}" class="nav__logo">
-                        <i class='bx bx-layer nav__logo-icon'></i>
+                        <img src="{% static 'foodlogo/foodIcon.png'%}" width="20px" height="30px" alt="logo">
                         <span class="nav__logo-name">IIC Khajaghar</span>
                     </a>
 
                     <div class="nav__list">
-                        {% if request.user.customer %}
-                        <a href="{% url 'collegekhajaghar:csdashboard' %}" class="nav__link active">
-                        <i class='bx bx-grid-alt nav__icon' ></i>
-                            <span class="nav__name">Dashboard</span>
-                        </a>
-                        {% endif %}
                         <a href="{% url 'collegekhajaghar:home' %}" class="nav__link">
-                            <i class='bx bxs-dish nav__icon' ></i>
-                            <span class="nav__name">Products</span>
+                            <i class='bx bx-grid-alt nav__icon' ></i>
+                            <span class="nav__name">Dishes</span>
                         </a>
                         <a href="{% url 'collegekhajaghar:allproducts' %}" class="nav__link">
                             <i class='bx bxs-food-menu nav__icon' ></i>
@@ -62,7 +63,7 @@
                             <span class="nav__name">Order</span>
                         </a>
 
-                        <a href="{% url 'collegekhajaghar:customerprofile' %}" class="nav__link">
+                        <a href="{% url 'collegekhajaghar:customerprofile' %}" class="nav__link ">
                             <i class='bx bx-user nav__icon' ></i>
                             <span class="nav__name">Profile</span>
                         </a>
@@ -77,9 +78,9 @@
                         </a>
                         {% endif %}
                         {% if request.user.customer %}
-                        <a href="{% url 'collegekhajaghar:home' %}" class="nav__link">
+                        <a href="{% url 'collegekhajaghar:about' %}" class="nav__link">
                             <i class='bx bx-bar-chart-alt-2 nav__icon' ></i>
-                            <span class="nav__name">Graph</span>
+                            <span class="nav__name">About Us</span>
                         </a>
                         {% endif %}
                         </a>
@@ -92,7 +93,7 @@
                         {% endif %}
                 </div>
             </nav>
-        </div>
+      </div>
         {% block content %}
         {% endblock %}
         <!--===== MAIN JS =====-->

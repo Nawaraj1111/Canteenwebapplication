@@ -2,16 +2,16 @@
 
 {% block title %}Add New Product{% endblock %}
 
-{% block content1 %}
-<div class="container">
+{% block content %}
+<div class="container-fluid">
     <div class="row">
-        <div class="col-md-10 mx-auto">
-            <h3>Add New product</h3>
+        <div class="col-md-12 mx-auto">
+            <h3>Add New Dish</h3>
             <hr>
             <form action="" method="POST" enctype="multipart/form-data">
                 {% csrf_token %}
                 {{form.as_p}}
-                <button class="btn btn-info">Submit Data</button>
+                <button class="btn btn-info">Add Dish</button>
             </form>
         </div>
     </div>

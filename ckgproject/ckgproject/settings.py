@@ -39,7 +39,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.humanize',
-
     'collegekhajagharapp',
     'bootstrap_datepicker_plus',
 ]
@@ -127,10 +126,10 @@ JAZZMIN_SETTINGS = {
     "site_title": "IICkhajaghar",
 
     #title on the brand, and login screen
-    "site_header": "IICkhajaghar",
+    "site_header": "IICKhajaghar Admin",
 
     #welcome text on login screen
-    "welcome_sign": "Welcome to IIC CKG Admin Panel",
+    "welcome_sign": "Welcome to IICkahajghar Login Screen",
 
     #copyright on the footer
     "copyright": "IICKhajaghar",
@@ -138,9 +137,8 @@ JAZZMIN_SETTINGS = {
     # The model admin to search from the search bar, search bar omitted if excluded
     "search_model": "auth.User",
 
-    # Field name on user model that contains avatar image
+    # Field name on user model that contains avatar customerDp
     "user_avatar": None,
-
 }
 
 
@@ -165,7 +163,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = "smtp.gmail.com"
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
-EMAIL_HOST_USER = "luitel.nawaraj123000@gmail.com"
+EMAIL_HOST_USER = "collegekhajaghar@gmail.com"
 EMAIL_HOST_PASSWORD = "nawaraj.1234"
 DEFAULT_FROM_EMAIL = 'collegekhajaghar Team <noreply@collegekhajaghar.com.np'
 

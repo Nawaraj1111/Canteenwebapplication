@@ -4,7 +4,7 @@
 
 {% block content %}
 <div class="container m-0">
-    <h3 class="titlecat">All Dishes based upon Categories</h3><hr>
+    <h3 class="titlecat text-center">All Dishes based upon Categories</h3><hr>
     {% for cat in allcategories %}
     <h4>{{cat.title}}</h4><hr>
     <div class="row m-1">
@@ -13,7 +13,11 @@
             <div class="m-4">
                 <h4><a href="{% url 'collegekhajaghar:productdetail' p.slug %}">{{p.title}}</a></h4>
                 <img src="{{p.image.url}}" alt="" class="img-fluid" style="height: 2500; object-fit: cover;">
-                <p class="mt-3">Price: Rs.{{p.normal_price}} <strike>{{p.offer_price}}</strike></p>
+                {% if p.normal_price == None %}
+                    <p class="mt-3">Price: Rs.{{p.offer_price}}</p> <P style="display:none">{{p.normal_price}}</P>
+                {% else %}
+                    <p class="mt-3">Price: Rs.{{p.offer_price}} <strike>Rs.{{p.normal_price}}</strike></p>
+                {% endif %}
                 <a href="{% url 'collegekhajaghar:addtocart' p.id %}" class="btn btn-primary">Add To Cart</a>
             </div>
         </div>

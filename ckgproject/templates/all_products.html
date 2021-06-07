@@ -12,7 +12,12 @@
         <div class="col-md-3">
             <h3 class="cattitle"><a href="{% url 'collegekhajaghar:productdetail' p.slug %}">{{p.title}}</a></h3>
             <img src="{{p.image.url}}" alt="" class="img-fluid" style="height: 2500; object-fit: cover;">
-            <p class="mt-3">Price:Price: Rs.{{p.normal_price}} <strike>{{p.offer_price}}</strike></p>
+            <p class="mt-3">Price: Rs.{{p.offer_price}}
+                {% if p.normal_price == 0 }
+                    <div></div>
+                {% if p.normal_price != 0 %}
+                    <p style="display:none">{{p.normal_price}}</p>
+                {% endif %}
             <a href="{% url 'collegekhajaghar:addtocart' p.id %}" class="btn btn-primary">Add To Cart</a>
         </div>
         {% endfor %}

@@ -3,18 +3,18 @@
 
 {% block title %}Order Detail{% endblock  %}
 
-{% block content1 %}
+{% block content %}
 <div class="container">
     <div class="row">
-        <div class="col-md-8 mx-auto">
+        <div class="col-md-12 mx-auto">
             <h3>Order Detail</h3>
             <hr>
             <p><span class="font-weight-bold">Order ID: </span> #ORDER_{{ord_obj.id}}</p>
             <p><span class="font-weight-bold">Order Status: </span> {{ord_obj.order_status}}</p>
-            <p><span class="font-weight-bold">Order On: </span> {{ord_obj.created_at}}({{ord_obj.created_at|timesince}} ago)</p>
-            <p><span class="font-weight-bold">Customer Information: </span> By {{ord_obj.ordered_by}}, {{ord_obj.mobile}}</p>
-            <p><span class="font-weight-bold">Shipping Address: </span> By {{ord_obj.shipping_address}} ({{ord_obj.email}})</p>
-            <p><span class="font-weight-bold">Payment Information: </span>  Using {{ord_obj.payment_method}} ({% if ord_obj.payment_completed %}Payment Completed{% else %}Not Paid{% endif %})</p>
+            <p><span  class="font-weight-bold">Order time: </span>13 minutes ago</p>
+            <p><span class="font-weight-bold">Preferred Time: </span> {{ord_obj.preffered_date_time}}{{ord_obj.created_at|timesince}}</p>
+            <p><span class="font-weight-bold">User Information: </span>{{ord_obj.ordered_by}}, {{ord_obj.mobile}}</p>
+            <p><span class="font-weight-bold">Payment Details: </span>{{ord_obj.payment_method}} ({% if ord_obj.payment_completed %}Payment Completed{% else %}Not Paid{% endif %})</p>
             <h4>Ordered Items</h4>
             <table class="table">
                 <thead>
@@ -52,7 +52,6 @@
                     {% endfor %}
                 </select>
                 <button class="btn btn-info">Change</button>
-                s
             </form>
         </div>
     </div>

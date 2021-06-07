@@ -6,14 +6,14 @@
 <div class="container">
     <div class="row">
         <div class="col-md-12">
-            <h3>Previous Orders of {{ customer }}</h3>
-            <hr>
-            <table class="table">
+            <h3 class="text-center">Listed of previous orders</h3>
+            <table class="table table-striped">
                 <thead>
                     <tr>
                         <th>SN</th>
                         <th>Order ID</th>
                         <th>Amount</th>
+                        <th>Prefer DateTime</th>
                         <th>Ordered on</th>
                         <th>Status</th>
                     </tr>
@@ -24,7 +24,8 @@
                         <td>{{forloop.counter}}</td>
                         <td><a href="{% url 'collegekhajaghar:customerorderdetail' ord.pk %}"> #ORDER_{{ord.id}}</a></td>
                         <td>{{ord.total}}</td>
-                        <td>{{ord.created_at|timesince}} ago</td>
+                        <td>{{ord.preffered_date_time}}</td>
+                        <td>{{ord.order_created_at|timesince}} ago</td>
                         <td>{{ord.order_status}}</td>
                     </tr>
                     {% endfor %}

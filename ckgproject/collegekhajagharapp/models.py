@@ -7,12 +7,11 @@ from datetime import datetime, date
 class Admin(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     full_name = models.CharField(max_length=50)
-    image = models.ImageField(upload_to="admins")
+    image = models.ImageField(upload_to="CKG Staff")
     mobile = models.CharField(max_length=20)
 
     def __str__(self):
         return self.user.username
-
 
 class Customer(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -38,7 +37,7 @@ class Product(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     image = models.ImageField(upload_to="products")
     offer_price = models.PositiveIntegerField()
-    normal_price = models.PositiveIntegerField(null=True)
+    normal_price = models.PositiveIntegerField(null=True, blank=True)
     carbohydrate = models.DecimalField(max_digits=5, decimal_places=2)
     protein = models.DecimalField(max_digits=5, decimal_places=2)
     fats = models.DecimalField(max_digits=5, decimal_places=2)
@@ -66,7 +65,7 @@ class Cart(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return "Cart: " + str(self.id)
+        return "Cart Number({1}) of customer {0} ".format(self.customer, str(self.id))
 
 
 class CartProduct(models.Model):
@@ -81,24 +80,20 @@ class CartProduct(models.Model):
 
 
 ORDER_STATUS = (
+    ("Order Pending", "Order Pending"),
     ("Order Received", "Order Received"),
-    ("Order Processing", "Order Processing"),
-    ("On the way", "On the way"),
-    ("Order Completed", "Order Completed"),
     ("Order Canceled", "Order Canceled"),
 )
 
 METHOD = (
-    ("Cash On Delivery", "Cash On Delivery"),
+    ("Cash", "Cash"),
     ("Khalti", "Khalti"),
 )
-
 
 class Order(models.Model):
     cart = models.OneToOneField(Cart, on_delete=models.CASCADE)
     ordered_by = models.CharField(max_length=30)
-    # order_date = models.DateField(auto_now_add=False, auto_now=False)
-    # order_time = models.TimeField(auto_now_add=False, auto_now=False, blank=True)
+    preffered_date_time = models.DateTimeField(auto_now_add=False, auto_now=False)
     mobile = models.CharField(max_length=10)
     email = models.EmailField(null=True, blank=True)
     subtotal = models.PositiveIntegerField()
@@ -112,12 +107,23 @@ class Order(models.Model):
         default=False, null=True, blank=True)
 
     def __str__(self):
-        return "Order: " + str(self.id)
+        return "Order Number({1}) of {0} ".format(self.ordered_by, str(self.id))
+
+    @property
+    def time_left_minutes(self):
+        timenow = self.preffered_date_time
+        now = datetime.now()
+        result = timenow - now
+        if result >= 0:
+            return result.minutes
+        else:
+            return "Time out"
 
 class Review(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     date_time = models.DateTimeField(auto_now_add=True)
     comment = models.TextField(max_length=100)
+
     def __str__(self):
         return self.user.username

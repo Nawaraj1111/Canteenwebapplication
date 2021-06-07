@@ -8,7 +8,10 @@
 {% block content %}
 <div class="container">
     <h5 class=""><b><i class="fa fa-dashboard"></i> My Dashboard</b></h5>
-    <h1>Hello i am {{data}}</h1>
-
+    {% for l in data %}
+        <div>
+            <h1>Here is list of customer: {{ l }}</h1>
+        </div>
+    {% endfor %}
 </div>
 {% endblock %}

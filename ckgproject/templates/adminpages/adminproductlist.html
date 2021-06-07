@@ -1,13 +1,12 @@
 {% extends 'adminpages/adminbase.html' %}
 {% block title %}All Products{% endblock %}
 
-
-{% block content1 %}
-<div class="container"> 
+{% block content %}
+<div class="container-fluid">
     <div class="row">
         <div class="col-md-12">
             <h3>All Product list</h3><hr>
-            <a href="{% url 'collegekhajaghar:adminproductcreate' %}">Add New Product</a>
+            <a href="{% url 'collegekhajaghar:adminproductcreate' %}">Add New Dish</a>
             <table class="table table-striped">
                 <thead>
                     <tr>
@@ -24,7 +23,7 @@
                         <td>{{forloop.counter}}</td>
                         <td>{{p.title}}</td>
                         <td><img src="{{p.image.url}}" style="height: 60px;" alt=""></td>
-                        <td>{{p.selling_price}}</td>
+                        <td>{{p.offer_price}}</td>
                         <td>{{p.view_count}}</td>
                     </tr>
                     {% endfor %}

@@ -1,6 +1,6 @@
 <html>
 <head>
-    <script src="https://unpkg.com/khalti-checkout-web@latest/dist/khalti-checkout.iffe.js"></script>
+    <script src="https://khalti.s3.ap-south-1.amazonaws.com/KPG/dist/2020.12.17.0.0.0/khalti-checkout.iffe.js"></script>
 </head>
 <body>
     <h3>Your order amount is Rs. {{order.total}}</h3>
@@ -17,7 +17,7 @@
             "productName": "order_{{order.id}}",
             "productUrl": "http://localhost:8000",
             "paymentPreference": [
-                "KHALTI",
+                "KHALTI","MOBILE_BANKING","CONNECT_IPS"
                 ],
             "eventHandler": {
                 onSuccess (payload) {

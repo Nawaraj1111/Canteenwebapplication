@@ -1,38 +1,47 @@
 {% extends 'adminpages/adminbase.html' %}
-
-{% block title %}All Orders {% endblock %}
-
-{% block content1 %}
-<div class="container">
-    <div class="row">
-        <div class="col-md-12">
-            <h3>All Orders</h3><hr>
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>SN</th>
-                        <th>Order ID </th>
-                        <th>Customer</th>
-                        <th>Ordered On</th>
-                        <th>Amount</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for order in allorders %}
-                    <tr>
-                        <td>{{forloop.counter}}</td>
-                        <td><a href="{% url 'collegekhajaghar:adminorderdetail' order.id %}">#ORDER_{{order.id}}</a></td>
-                        <td>{{order.ordered_by}}</td>
-                        <td>{{order.created_at}}</td>
-                        <td>{{order.total}}</td>
-                        <td>{{order.order_status}}</td>
-            
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
+{% block title %}Order list-Staff{% endblock %}
+{% block headadmin %}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
 {% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+       <div class="row">
+           <div class="col-md-12">
+               <h3>Pending Orders</h3>
+               <table class="table">
+                   <thead>
+                       <tr>
+                           <th>SN</th>
+                           <th>Order ID </th>
+                           <th>User</th>
+                           <th>Preferred datetime</th>
+                           <th>Amount</th>
+                           <th>Status</th>
+                       </tr>
+                   </thead>
+                   <tbody>
+                       {% for order in pendingorders %}
+                       <tr>
+                           <td>{{forloop.counter}}</td>
+                           <td><a href="{% url 'collegekhajaghar:adminorderdetail' order.id %}">#ORDER_{{order.id}}</a></td>
+                           <td>{{order.ordered_by}}</td>
+                           <td>{{order.preffered_date_time}}</td>
+                           <td>{{order.total}}</td>
+                           {% if order.order_status == "Order Canceled" %}
+                               <td class="text-light bg-danger">{{order.order_status}}</td>
+                           {% elif order.order_status == "Order Pending" %}
+                               <td class="text-light bg-warning">{{order.order_status}}</td>
+                           {% else %}
+                               <td class="text-white bg-success">{{order.order_status}}</td>
+                           {% endif %}
+                       </tr>
+                       {% endfor %}
+                   </tbody>
+               </table>
+           </div>
+       </div>
+    </div>
+{% endblock %}
+
+

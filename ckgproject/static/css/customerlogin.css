@@ -1,0 +1,15 @@
+.bcr{
+    background-color:#e4e4e2;
+}
+
+.formclr{
+    background-color:#1c251c;
+    color:white;
+}
+.form-control{
+    background:#eff3f7;
+}
+.form-control:hover{
+    background:white;
+}
+
